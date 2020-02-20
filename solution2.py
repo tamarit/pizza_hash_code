@@ -1,6 +1,8 @@
 import itertools
 import collections
 from itertools import islice
+import random
+import pickle
 
 
 
@@ -67,11 +69,11 @@ total_dict = new_total_dict
 # if max_slices in total_dict:
 #     break
 # print(total_dict)
-len_prev_total_dict = 0
+len_prev_total_dict = set()
 
-while (max_slices not in total_dict) and len(total_dict) != len_prev_total_dict:
+while (max_slices not in total_dict) and set(total_dict.keys()) != len_prev_total_dict:
     # print(total_dict)
-    len_prev_total_dict = len(total_dict)
+    len_prev_total_dict = set(total_dict.keys())
     total_dict_chunked = []
     i = 0
     total_dict.items
@@ -96,9 +98,19 @@ while (max_slices not in total_dict) and len(total_dict) != len_prev_total_dict:
         if k <= max_slices:
             new_total_dict[k] = total_dict[k]
     total_dict = new_total_dict
+
+    #shuffle
+    keys =  list(total_dict.keys())
+    random.shuffle(keys)
+    new_total_dict = dict([(key, total_dict[key]) for key in keys])
+    total_dict = new_total_dict
+
+    with open('total_dict.pkl', 'wb') as handle:
+        pickle.dump(total_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
     # print(total_dict)
-    print(len_prev_total_dict)
-    print(len(total_dict))
+    print(len(len_prev_total_dict))
+    print(len(total_dict.keys()))
     # print(total_dict)
 
 print(sorted(total_dict.keys()))
